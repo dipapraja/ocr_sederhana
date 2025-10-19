@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ocr_sederhana/screens/scan_screen.dart';
+import 'scan_screen.dart';
 // import 'package:flutter_ocr_sederhana/screens/scan_screen.dart';
 
 class HomeScreen extends StatelessWidget {
