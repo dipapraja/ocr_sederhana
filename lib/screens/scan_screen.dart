@@ -25,7 +25,7 @@ class _ScanScreenState extends State<ScanScreen> {
   }
 
   /// Inisialisasi kamera
-  void _initCamera() async {
+  Future<void> _initCamera() async {
     try {
       cameras = await availableCameras();
       _controller = CameraController(
@@ -43,17 +43,17 @@ class _ScanScreenState extends State<ScanScreen> {
         setState(() {});
       }
     } catch (e) {
-    debugPrint('Error initializing camera: $e');
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Pemindaian Gagal! Periksa Izin Kamera atau coba lagi.'),
-          duration: Duration(seconds: 3),
-        ),
-      );
+      debugPrint('Error initializing camera: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Pemindaian Gagal! Periksa Izin Kamera atau coba lagi.'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
     }
   }
-}
 
   @override
   void dispose() {
@@ -65,9 +65,8 @@ class _ScanScreenState extends State<ScanScreen> {
   Future<String> _ocrFromFile(File imageFile) async {
     final inputImage = InputImage.fromFile(imageFile);
     final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
-    final RecognizedText recognizedText =
-        await textRecognizer.processImage(inputImage);
-    textRecognizer.close();
+    final recognizedText = await textRecognizer.processImage(inputImage);
+    await textRecognizer.close();
     return recognizedText.text;
   }
 
@@ -85,13 +84,17 @@ class _ScanScreenState extends State<ScanScreen> {
           content: Text('Memproses OCR, mohon tunggu...'),
           duration: Duration(seconds: 2),
         ),
-      );      
+      );
 
       final XFile image = await _controller!.takePicture();
       final ocrText = await _ocrFromFile(File(image.path));
 
-      await Future.delayed(const Duration(seconds: 2));
       if (!mounted) return;
+
+      await Future.delayed(const Duration(seconds: 1));
+
+      await Future.delayed(const Duration(milliseconds: 500));
+      
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -99,22 +102,20 @@ class _ScanScreenState extends State<ScanScreen> {
         ),
       );
     } catch (e) {
-    if (mounted) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Pemindaian Gagal! Periksa Izin Kamera atau coba lagi.'),
             duration: Duration(seconds: 3),
           ),
         );
-      });
+      }
     }
   }
-}
 
   @override
   Widget build(BuildContext context) {
-    // Jika controller belum siap, tampilkan tampilan loading yang dimodifikasi
+    // Jika controller belum siap, tampilkan tampilan loading
     if (_controller == null || !_controller!.value.isInitialized) {
       return Scaffold(
         backgroundColor: Colors.grey[900],
