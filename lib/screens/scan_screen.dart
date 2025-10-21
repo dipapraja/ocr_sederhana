@@ -31,6 +31,7 @@ class _ScanScreenState extends State<ScanScreen> {
       _controller = CameraController(
         cameras.first,
         ResolutionPreset.medium,
+        enableAudio: false,
       );
 
       _initializeControllerFuture = _controller!.initialize();
@@ -42,9 +43,17 @@ class _ScanScreenState extends State<ScanScreen> {
         setState(() {});
       }
     } catch (e) {
-      debugPrint('Error initializing camera: $e');
+    debugPrint('Error initializing camera: $e');
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Pemindaian Gagal! Periksa Izin Kamera atau coba lagi.'),
+          duration: Duration(seconds: 3),
+        ),
+      );
     }
   }
+}
 
   @override
   void dispose() {
@@ -90,11 +99,18 @@ class _ScanScreenState extends State<ScanScreen> {
         ),
       );
     } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Error: $e')));
+    if (mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Pemindaian Gagal! Periksa Izin Kamera atau coba lagi.'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      });
     }
   }
+}
 
   @override
   Widget build(BuildContext context) {
