@@ -1,16 +1,13 @@
 # ocr_sederhana
+1. Modifikasi Struktur Navigasi dan Aliran
+![alt text](<Images/No 1.png>)
+![alt text](<Images/No 1.1.png>)
+![alt text](<Images/No 1.2.png>)
 
-A new Flutter project.
+2. Penyesuaian Tampilan dan Penanganan State/Error
+![alt text](<Images/No 2.png>)
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+3. Implementasi Plugin Text-to-Speech (TTS)
+   Instalasi Plugin 
+   ![Konversi Widget dan Inisialisasi](<Images/No 3.2.png>)
+   ![Fungsionalitas Pembacaan ](<Images/No 3.3.png>)
