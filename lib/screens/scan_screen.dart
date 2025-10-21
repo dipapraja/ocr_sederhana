@@ -15,7 +15,7 @@ class ScanScreen extends StatefulWidget {
 }
 
 class _ScanScreenState extends State<ScanScreen> {
-  CameraController? _controller; // gunakan nullable agar aman
+  CameraController? _controller;
   late Future<void> _initializeControllerFuture;
 
   @override
@@ -35,6 +35,8 @@ class _ScanScreenState extends State<ScanScreen> {
 
       _initializeControllerFuture = _controller!.initialize();
       await _initializeControllerFuture;
+
+      await Future.delayed(const Duration(seconds: 1));
 
       if (mounted) {
         setState(() {});
@@ -74,11 +76,12 @@ class _ScanScreenState extends State<ScanScreen> {
           content: Text('Memproses OCR, mohon tunggu...'),
           duration: Duration(seconds: 2),
         ),
-      );
+      );      
 
       final XFile image = await _controller!.takePicture();
       final ocrText = await _ocrFromFile(File(image.path));
 
+      await Future.delayed(const Duration(seconds: 2));
       if (!mounted) return;
       Navigator.push(
         context,
@@ -95,11 +98,22 @@ class _ScanScreenState extends State<ScanScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Jika controller belum siap, tampilkan loading
+    // Jika controller belum siap, tampilkan tampilan loading yang dimodifikasi
     if (_controller == null || !_controller!.value.isInitialized) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
+      return Scaffold(
+        backgroundColor: Colors.grey[900],
+        body: const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(color: Colors.yellow),
+              SizedBox(height: 16),
+              Text(
+                'Memuat Kamera... Harap tunggu.',
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+            ],
+          ),
         ),
       );
     }
